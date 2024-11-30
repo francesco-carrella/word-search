@@ -7,7 +7,7 @@
     "dist/**/*"
   ],
   "scripts": {
-    "build": "webpack --mode=production",
+    "build": "NODE_OPTIONS=--openssl-legacy-provider webpack --mode=production",
     "build:doc": "jsdoc ./src -d docs",
     "test": "jest --verbose --coverage",
     "lint": "eslint --ext .js --max-warnings=0 ./src",

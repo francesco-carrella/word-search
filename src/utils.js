@@ -355,14 +355,24 @@ function readPathFromGrid(x, y, direction, len, grid) {
 const shuffleDirections = (allowedDirections, tryBackwardsFirst, backwardsProbability = 1) => {
 	const forwardDirections = ["S", "E", "NE", "SE"];
 	const backwardDirections = ["N", "W", "NW", "SW"];
-	const availableDirections = backwardsProbability === 0 ? forwardDirections : [...forwardDirections, ...backwardDirections];
-	const filteredDirections = availableDirections.filter(d => allowedDirections.includes(d));
-	if (backwardsProbability > 0 && tryBackwardsFirst) {
-		const backwards = filteredDirections.filter(d => backwardDirections.includes(d));
-		const forwards = filteredDirections.filter(d => forwardDirections.includes(d));
-		return [..._shuffle(backwards), ..._shuffle(forwards)];
+	
+	// Filter allowed directions first
+	const allowedForwards = forwardDirections.filter(d => allowedDirections.includes(d));
+	const allowedBackwards = backwardDirections.filter(d => allowedDirections.includes(d));
+	
+	// Increase probability slightly to account for failed placements
+	const adjustedProbability = Math.min(1, backwardsProbability * 1.5);
+	const useBackwards = Math.random() < adjustedProbability;
+	
+	if (!useBackwards) {
+		return _shuffle(allowedForwards);
 	}
-	return _shuffle(filteredDirections);
+	
+	if (tryBackwardsFirst) {
+		return [..._shuffle(allowedBackwards), ..._shuffle(allowedForwards)];
+	}
+	
+	return _shuffle([...allowedForwards, ...allowedBackwards]);
 };
 
 /**

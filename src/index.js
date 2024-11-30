@@ -51,7 +51,7 @@ class WordSearch {
 				);
 				if (path !== false) {
 					grid = utils.addWordToGrid(clean, path, grid);
-					addedWords.push({ word, clean, path });
+					addedWords.push({ word, clean, path, backwards: utils.isBackwardsDirection(path[0].dir) });
 				}
 			}
 		});

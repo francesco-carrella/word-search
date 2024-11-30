@@ -364,6 +364,17 @@ const shuffleDirections = (allowedDirections, tryBackwardsFirst, backwardsProbab
 	return _shuffle(filteredDirections);
 };
 
+/**
+ * Returns whether a direction is considered backwards
+ * @kind function
+ * @name isBackwardsDirection
+ * @param {String} direction - Direction ("N", "S", "E", "W", "NE", "NW", "SE", "SW")
+ * @returns {Boolean} - Whether the direction is backwards
+ */
+const isBackwardsDirection = (direction) => {
+	return ["N", "W", "NW", "SW"].includes(direction);
+};
+
 module.exports = {
 	getWordStartBoundaries,
 	createPath,
@@ -377,5 +388,6 @@ module.exports = {
 	filterWordsInGrid,
 	getAllCharSequencesFromGrid,
 	readPathFromGrid,
-	shuffleDirections
+	shuffleDirections,
+	isBackwardsDirection
 };

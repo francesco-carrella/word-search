@@ -5,6 +5,13 @@
 
 * make NodeJS bundle work in IE ([#8](https://github.com/blex41/word-search/issues/8)) ([2aedb20](https://github.com/blex41/word-search/commit/2aedb20))
 
+## [1.2.1] - 2024-01-23
+
+### Fixed
+- Fixed backwards word placement to properly respect backwardsProbability setting
+- When backwardsProbability is 0, only forward directions (E, S, NE, SE) are used
+- Added tests to verify backwards word placement behavior
+
 ## [1.0.11](https://github.com/blex41/word-search/compare/v1.0.10...v1.0.11) (2019-01-14)
 
 ### Bug Fixes

@@ -239,7 +239,8 @@ const findPathInGrid = (
 	// We'll try all possible directions in random order until we find a spot
 	const directionsToTry = shuffleDirections(
 		allowedDirections,
-		tryBackwardsFirst
+		tryBackwardsFirst,
+		backwardsProbability
 	);
 	while (directionsToTry.length && !foundPath) {
 		const direction = directionsToTry.shift();
@@ -341,14 +342,27 @@ function readPathFromGrid(x, y, direction, len, grid) {
 	return path.map(pos => grid[pos.y][pos.x]).join("");
 }
 
-function shuffleDirections(allowedDirections, tryBackardsFirst) {
-	const backwardsDirections = _shuffle(["N", "W", "NW", "SW"]);
-	const forwardDirections = _shuffle(["S", "E", "NE", "SE"]);
-	const allDirections = tryBackardsFirst
-		? backwardsDirections.concat(forwardDirections)
-		: forwardDirections.concat(backwardsDirections);
-	return allDirections.filter(d => allowedDirections.includes(d));
-}
+/**
+ * Returns a shuffled array of directions based on settings
+ * @kind function
+ * @name shuffleDirections
+ * @param {Array} allowedDirections - Array of allowed directions
+ * @param {Boolean} tryBackwardsFirst - Whether to try backwards directions first
+ * @param {Number} backwardsProbability - Probability to allow backwards directions (0-1)
+ * @returns {Array} Shuffled array of directions
+ */
+const shuffleDirections = (allowedDirections, tryBackwardsFirst, backwardsProbability = 1) => {
+	const forwardDirections = ["S", "E", "NE", "SE"];
+	const backwardDirections = ["N", "W", "NW", "SW"];
+	const availableDirections = backwardsProbability === 0 ? forwardDirections : [...forwardDirections, ...backwardDirections];
+	const filteredDirections = availableDirections.filter(d => allowedDirections.includes(d));
+	if (backwardsProbability > 0 && tryBackwardsFirst) {
+		const backwards = filteredDirections.filter(d => backwardDirections.includes(d));
+		const forwards = filteredDirections.filter(d => forwardDirections.includes(d));
+		return [..._shuffle(backwards), ..._shuffle(forwards)];
+	}
+	return _shuffle(filteredDirections);
+};
 
 module.exports = {
 	getWordStartBoundaries,
@@ -362,4 +376,6 @@ module.exports = {
 	findPathInGrid,
 	filterWordsInGrid,
 	getAllCharSequencesFromGrid,
+	readPathFromGrid,
+	shuffleDirections
 };

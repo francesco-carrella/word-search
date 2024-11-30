@@ -352,16 +352,26 @@ function readPathFromGrid(x, y, direction, len, grid) {
  * @returns {Array} Shuffled array of directions
  */
 const shuffleDirections = (allowedDirections, tryBackwardsFirst, backwardsProbability = 1) => {
-	const forwardDirections = ["S", "E", "NE", "SE"];
-	const backwardDirections = ["N", "W", "NW", "SW"];
-	const availableDirections = backwardsProbability === 0 ? forwardDirections : [...forwardDirections, ...backwardDirections];
-	const filteredDirections = availableDirections.filter(d => allowedDirections.includes(d));
+	const directions = {
+		forward: ["S", "E", "NE", "SE"],
+		backward: ["N", "W", "NW", "SW"]
+	};
+	
+	// Filter allowed directions based on probability
+	const available = backwardsProbability === 0 
+		? directions.forward 
+		: [...directions.forward, ...directions.backward];
+	const filtered = available.filter(d => allowedDirections.includes(d));
+	
+	// Handle tryBackwardsFirst preference
 	if (backwardsProbability > 0 && tryBackwardsFirst) {
-		const backwards = filteredDirections.filter(d => backwardDirections.includes(d));
-		const forwards = filteredDirections.filter(d => forwardDirections.includes(d));
-		return [..._shuffle(backwards), ..._shuffle(forwards)];
+		return [
+			..._shuffle(filtered.filter(d => directions.backward.includes(d))),
+			..._shuffle(filtered.filter(d => directions.forward.includes(d)))
+		];
 	}
-	return _shuffle(filteredDirections);
+	
+	return _shuffle(filtered);
 };
 
 module.exports = {

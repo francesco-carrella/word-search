@@ -24,10 +24,11 @@ const createPath = (x, y, dir, len) => {
 			const { x: prevX, y: prevY } = path[path.length - 1];
 			return path.concat({
 				x: prevX + (dir.includes("E") ? 1 : dir.includes("W") ? -1 : 0),
-				y: prevY + (dir.includes("S") ? 1 : dir.includes("N") ? -1 : 0)
+				y: prevY + (dir.includes("S") ? 1 : dir.includes("N") ? -1 : 0),
+				dir
 			});
 		},
-		[{ x, y }]
+		[{ x, y, dir }]
 	);
 };
 
